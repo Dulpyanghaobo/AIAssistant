@@ -1,0 +1,476 @@
+{
+	"info": {
+		"_postman_id": "6b033d14-ad2e-4052-8318-42f69c3896f8",
+		"name": "DCE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3542117"
+	},
+	"item": [
+		{
+			"name": "/api/v2/auth/token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();",
+							"pm.environment.set(\"access_token\", responseJson.access_token);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"client_id\" : \"www.successfactors.com\",\n    \"grant_type\": \"none\",\n    \"client_secret\": \"952e380af67c8a5b1700f449a339563ed5dcb646902e55aac32a0d1d0fa3f975\",\n    \"scope\": \"sf_user_id=101040,sf_user_name=astevenson,sf_company_id=MOBOMPM1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{microservices}}/api/v2/auth/token",
+					"host": [
+						"{{microservices}}"
+					],
+					"path": [
+						"api",
+						"v2",
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v2/devices/preactivation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();",
+							"pm.environment.set(\"token\", responseJson.token);",
+							"pm.environment.set(\"activation_code\", responseJson.activation_code);",
+							"function randomAlphabetString(length) {",
+							"    const chars = 'abcdefghijklmnopqrstuvwxyz';",
+							"    let result = '';",
+							"    for (let i = 0; i < length; i++) {",
+							"        result += chars.charAt(Math.floor(Math.random() * chars.length));",
+							"    }",
+							"    return result;",
+							"}",
+							"",
+							"const deviceIdentifier = randomAlphabetString(100); // Change the length to your desired string length.",
+							"pm.environment.set(\"deviceIdentifier\", deviceIdentifier);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"access_token\": \"{{access_token}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/api/v2/devices/preactivation",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"api",
+						"v2",
+						"devices",
+						"preactivation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseJson = pm.response.json();",
+							"pm.environment.set(\"new_access_token\", responseJson.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"use_refresh_token\": false,\n    \"token\": \"{{token}}\",\n    \"activation_code\": \"{{activation_code}}\",\n    \"description\": \"iOS\",\n    \"device_identifier\": \"{{deviceIdentifier}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/api/v2/devices/preactivation",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"api",
+						"v2",
+						"devices",
+						"preactivation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/proxy/v1/bizx/odata/v2/User('101040')?$metadata&$format=json",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odata/v2/User('101040')?$metadata&$format=json",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"odata",
+						"v2",
+						"User('101040')"
+					],
+					"query": [
+						{
+							"key": "$metadata",
+							"value": null
+						},
+						{
+							"key": "$format",
+							"value": "json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "critical_info",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/api/v2/light_auth/critical_info?flush=true",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"api",
+						"v2",
+						"light_auth",
+						"critical_info"
+					],
+					"query": [
+						{
+							"key": "flush",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/proxy/v1/bizx/odatav4/talent/opportunities/OpportunityService.svc/v4/Opportunities/fetch",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"opportunityFetchRequest\": {\n\t\t\"pageSize\": 20,\n\t\t\"status\": \"recommend\",\n\t\t\"pageIndex\": 0\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odatav4/talent/opportunities/OpportunityService.svc/v4/Opportunities/fetch",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"odatav4",
+						"talent",
+						"opportunities",
+						"OpportunityService.svc",
+						"v4",
+						"Opportunities",
+						"fetch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/proxy/v1/bizx/odatav4/talent/opportunities/OpportunityService.svc/v4/Opportunities/fetch Copy",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"opportunityFetchRequest\": {\n\t\t\"pageSize\": 20,\n\t\t\"status\": \"recommend\",\n\t\t\"pageIndex\": 0\n\t}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dc25patchpreview-mobile.hcm.ondemand.com/proxy/v1/bizx/odatav4/talent/opportunities/OpportunityService.svc/v4/Opportunities/fetch",
+					"protocol": "https",
+					"host": [
+						"dc25patchpreview-mobile",
+						"hcm",
+						"ondemand",
+						"com"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"odatav4",
+						"talent",
+						"opportunities",
+						"OpportunityService.svc",
+						"v4",
+						"Opportunities",
+						"fetch"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odatav4/talent/development/OpportunityService.svc/hasViewRecommendedRolePerm()",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odatav4/talent/development/OpportunityService.svc/hasViewRecommendedRolePerm()",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"odatav4",
+						"talent",
+						"development",
+						"OpportunityService.svc",
+						"hasViewRecommendedRolePerm()"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odatav4/talent/development/OpportunityService.svc/hasViewRecommendedRolePerm() Copy",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/odatav4/talent/development/OpportunityService.svc/hasViewRecommendedRolePerm()",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"odatav4",
+						"talent",
+						"development",
+						"OpportunityService.svc",
+						"hasViewRecommendedRolePerm()"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/proxy/v1/bizx/rest/ecosystem/wholeself/v1/status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "OAuth {{new_access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://mobile.microservices.hcm-eng.c.eu-de-2.cloud.sap/proxy/v1/bizx/rest/ecosystem/wholeself/v1/status",
+					"protocol": "https",
+					"host": [
+						"mobile",
+						"microservices",
+						"hcm-eng",
+						"c",
+						"eu-de-2",
+						"cloud",
+						"sap"
+					],
+					"path": [
+						"proxy",
+						"v1",
+						"bizx",
+						"rest",
+						"ecosystem",
+						"wholeself",
+						"v1",
+						"status"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
