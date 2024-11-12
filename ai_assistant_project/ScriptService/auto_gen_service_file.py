@@ -2,7 +2,7 @@ import os
 import re
 
 # Markdown文件路径
-markdown_file_path = "ServiceScript/auth_service.markdown"
+markdown_file_path = "ServiceScript/aiKun_service.markdown"
 
 # 读取markdown文件
 with open(markdown_file_path, "r") as file:

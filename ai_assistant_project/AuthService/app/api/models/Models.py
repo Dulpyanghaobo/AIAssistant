@@ -25,6 +25,7 @@ class User(Base):
     email = Column(String(128), unique=True, nullable=False)
     password_hash = Column(String(128), nullable=False)
     salt = Column(String(128), nullable=False)
+    user_key = Column(String(128), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     roles = relationship('Role', secondary='user_role', back_populates='users')
@@ -90,3 +91,7 @@ class UserToken(Base):
     refresh_expires_at = Column(DateTime)  # 新增的刷新令牌过期时间字段
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    # 这个属性表示UserToken与User之间的关联，它的值是一个User实例
+    user = relationship('User', back_populates='usertokens')
+
+User.usertokens = relationship("UserToken", order_by=UserToken.id, back_populates="user")

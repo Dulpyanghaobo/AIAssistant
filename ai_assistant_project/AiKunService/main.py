@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from VisionService.app.api.vision.routes import router as api_router
+from AiKunService.app.api.routes import router as api_router
 
 app = FastAPI()
 
@@ -14,8 +14,13 @@ app.add_middleware(
 )
 
 # Include API routers
-app.include_router(api_router, prefix="")
+app.include_router(api_router, prefix="/aikun")
+
+# @app.on_event("startup")
+# async def startup_event():
+#     # Initialize OCRService
+#     ocr_service = get_ocr_service()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8006)
+    uvicorn.run(app, host="0.0.0.0", port=8003)
